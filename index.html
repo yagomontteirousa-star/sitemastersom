@@ -98,7 +98,7 @@
     function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
     function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
     const smooth=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
-    const IS_PRODUCT_PAGE=/produtos\.html$/i.test(location.pathname);
+    const IS_PRODUCT_PAGE=/\/produtos(?:\.html)?\/?$/i.test(location.pathname);
 
     const cats=["Microfones","Mesas de som","Cabos","Acessórios","Iluminação"];
     const categoryCards=[
@@ -157,7 +157,7 @@
     function openCatalog(filter){
       if(!IS_PRODUCT_PAGE){
         const query=filter&&filter!=="Todos"?"?categoria="+encodeURIComponent(filter):"";
-        location.href="produtos.html"+query;
+        location.href="/produtos"+query;
         return;
       }
       const home=document.getElementById("home"),catalog=document.getElementById("catalog");
@@ -172,12 +172,12 @@
       scrollTo({top:0,behavior:smooth});
     }
     function openHome(hash){
-      if(IS_PRODUCT_PAGE){const target=hash&&hash.indexOf("#")>-1?hash.slice(hash.indexOf("#")):hash||"#inicio";location.href="index.html"+target;return;}
+      if(IS_PRODUCT_PAGE){const target=hash&&hash.indexOf("#")>-1?hash.slice(hash.indexOf("#")):hash||"#inicio";location.href=target==="#inicio"?"/":"/"+target;return;}
       const home=document.getElementById("home"),catalog=document.getElementById("catalog");
       home.classList.remove("hidden");home.hidden=false;
       catalog.classList.remove("active");catalog.hidden=true;
       document.body.classList.remove("catalog-open");
-      try{history.replaceState(null,"",hash||"#inicio")}catch(e){}
+      try{history.replaceState(null,"",(hash||"#inicio")==="#inicio"?"/":hash)}catch(e){}
       closeMenu();
       resetHeader();
       if((hash||"#inicio")==="#inicio"){scrollTo({top:0,behavior:"auto"});return;}
